@@ -15,8 +15,6 @@ class RDFormel
   RDFormel(char*);
   //Destruktor
   ~RDFormel();
-  //Überprüft die Rechnung auf Eingabefehler
-  bool Pruefen();
   //Zeiger auf den String mit der Rechnung
   char *Rechnung;
 
@@ -24,7 +22,6 @@ class RDFormel
   bool getpart(void *Daten);
 
  private:
-  void *Prueftmp;
   bool *aktiv;
   double getZahl();
 };

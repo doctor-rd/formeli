@@ -33,7 +33,6 @@ bool Ziffer(char Zeichen)
 RDFormel::RDFormel(char *frei)
 {
  aktiv=new bool[26];
- Prueftmp=new double;
 
  for(int i=0;i<26;i++)
   aktiv[i]=false;
@@ -45,131 +44,7 @@ RDFormel::RDFormel(char *frei)
 
 RDFormel::~RDFormel()
 {
- delete Prueftmp;
  delete aktiv;
-}
-
-bool RDFormel::Pruefen()
-{
- bool Art,Artalt;
- char vorher,Spezalt;
-
- position=0;
-
- if(!(Artalt=getpart(Prueftmp)))
- {
-  switch(*(char*)Prueftmp)
-  {
-   case '?' : return false;
-   case '/' : return false;
-   case '*' : return false;
-   case ')' : return false;
-   case '^' : return false;
-   case '!' : return false;
-   case 0   : return true;
-  }
-  Spezalt=Spezial;
-  vorher=*(char*)Prueftmp;
- }
-
- while(true)
- {
-  if((Art=getpart(Prueftmp))==true)
-   if(Artalt)
-    return false;
-   else
-    switch(vorher)
-    {
-     case ')' : return false;
-     case '!' : return false;
-     case 'S' : switch(Spezalt)
-                {
-                 case E :
-                 case PI : return false;
-                }
-                if(Spezalt>='A' && Spezalt<='Z') return false;
-                break;
-    }
-  else
-  {
-   switch(*(char*)Prueftmp)
-   {
-    case 'S' :
-    case '(' : if(!Artalt && vorher=='!') return false; break;
-    case ')' :
-    case '^' :
-    case '*' :
-    case '!' :
-    case '/' : if(!Artalt)
-                switch(vorher)
-                {
-                 case '(' :
-                 case '*' :
-                 case '/' :
-                 case '^' : return false;
-                 case 'S' : switch(Spezalt)
-                            {
-                             case SINH :
-                             case COSH :
-                             case TANH :
-                             case COTH :
-                             case ASIN :
-                             case ACOS :
-                             case ATAN :
-                             case ACOT :
-                             case LN :
-                             case WURZEL :
-                             case LOG :
-                             case SIN :
-                             case COS :
-                             case COT :
-                             case TAN : return false;
-                            }
-                }
-    case '-' :
-    case '+' : if(!Artalt)
-                switch(vorher)
-                {
-                 case '+' :
-                 case '-' : return false;
-                }
-               break;
-    case '?' : return false;
-    case 0   : if(Artalt) return true;
-               switch(vorher)
-               {
-                case '+' :
-                case '/' :
-                case '-' :
-                case '*' :
-                case '(' :
-                case '^' : return false;
-                case 'S' : switch(Spezalt)
-                           {
-                            case SINH :
-                            case COSH :
-                            case TANH :
-                            case COTH :
-                            case ASIN :
-                            case ACOS :
-                            case ATAN :
-                            case ACOT :
-                            case LN :
-                            case WURZEL :
-                            case LOG :
-                            case SIN :
-                            case COS :
-                            case COT :
-                            case TAN : return false;
-                           }
-               }
-               return true;
-   }
-  }
-  Spezalt=Spezial;
-  Artalt=Art;
-  vorher=*(char*)Prueftmp;
- }
 }
 
 double RDFormel::getZahl()
