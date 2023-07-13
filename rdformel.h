@@ -2,7 +2,6 @@
 #define NONE ""
 enum Spezials{SINH,COSH,TANH,COTH,E,PI,LN,LOG,SIN,COS,TAN,COT,ASIN,ACOS,ATAN,ACOT,WURZEL};
 
-const double pi=3.141592653589793;
 extern int position;
 extern char SpezLaenge;
 extern char Spezial;

@@ -103,7 +103,7 @@ double Formeli::SpezFunc()
  switch(Spezial)
  {
   case WURZEL : return Wurzel();
-  case PI : return PotRech(pi);
+  case PI : return PotRech(M_PI);
   case SIN : return sinrd(ifunc());
   case COS : return cosrd(ifunc());
   case TAN : return tanrd(ifunc());
@@ -341,9 +341,7 @@ inline double Formeli::sqrtrd(double in)
 
 inline double Formeli::sinrd(double in)
 {
- //if(in==pi) return 0;
-
- double tmp=in/pi;
+ double tmp=in/M_PI;
 
  if(tmp==(int)tmp)
   return 0;
@@ -353,12 +351,12 @@ inline double Formeli::sinrd(double in)
 
 inline double Formeli::cosrd(double in)
 {
- return sinrd(in+pi/2);
+ return sinrd(in+M_PI/2);
 }
 
 inline double Formeli::tanrd(double in)
 {
- double tmp=(in+pi/2)/pi;
+ double tmp=(in+M_PI/2)/M_PI;
 
  if(tmp==(int)tmp)
  {
