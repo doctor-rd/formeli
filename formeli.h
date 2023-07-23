@@ -3,17 +3,8 @@
 class Formeli:public RDFormel
 {
  public:
-  //Konstruktor
-  Formeli(char *frei);
-  Formeli();
-  //Destruktor
-  ~Formeli();
   //Liefert das Ergebnis von Rechnung zurück
   double Ergebnis();
-  //Setzt eine Variable die durch Buch gegeben ist auf den Wert, der in Wert gegeben ist.
-  void SetVar(char Buch,double Wert);
-  //Zeiger auf die Variablen A-Z
-  double *Vars;
   //Wird auf true gesetzt, falls ein Rechenfehler auftritt
   bool Fehler;
 

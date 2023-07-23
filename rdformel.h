@@ -1,5 +1,5 @@
-#define ALL "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-#define NONE ""
+#include<map>
+
 enum Spezials{SINH,COSH,TANH,COTH,E,PI,LN,LOG,SIN,COS,TAN,COT,ASIN,ACOS,ATAN,ACOT,WURZEL};
 
 extern int position;
@@ -31,17 +31,13 @@ struct Token {
 class RDFormel
 {
  public:
-  //Konstruktor
-  RDFormel(char*);
-  //Destruktor
-  ~RDFormel();
   //Zeiger auf den String mit der Rechnung
   char *Rechnung;
+    std::map<char, double> vars;
 
  protected:
     [[nodiscard]] Token getNextToken();
 
  private:
-  bool *aktiv;
   double getZahl();
 };

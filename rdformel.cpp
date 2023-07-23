@@ -1,6 +1,7 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include <iostream>
 #pragma hdrstop
 #include "rdformel.h"
 
@@ -27,23 +28,6 @@ bool Ziffer(char Zeichen)
    return true;
 
  return false;
-}
-
-RDFormel::RDFormel(char *frei)
-{
- aktiv=new bool[26];
-
- for(int i=0;i<26;i++)
-  aktiv[i]=false;
-
- for(int i=0;i<strlen(frei);i++)
-  if(frei[i]>='A' && frei[i]<='Z')
-   aktiv[frei[i]-'A']=true;
-}
-
-RDFormel::~RDFormel()
-{
- delete aktiv;
 }
 
 double RDFormel::getZahl()
@@ -90,8 +74,10 @@ Token RDFormel::getNextToken() {
   result.m_char=*Test;
   position++;
   SpezLaenge=1;
-  if(!aktiv[*Test-'A'])
+  if (!vars.contains(result.m_char)) {
+   std::cout<<"unexpected variable "<<*Test<<"\n";
    result.m_char='?';
+  }
   result.m_type = TokenType::Variable;
   return result;
  }
@@ -244,8 +230,10 @@ Token RDFormel::getNextToken() {
   result.m_char=*Test+'A'-'a';
   position++;
   SpezLaenge=1;
-  if(!aktiv[*Test-'a'])
+  if (!vars.contains(result.m_char)) {
+   std::cout<<"unexpected variable "<<*Test<<"\n";
    result.m_char='?';
+  }
   result.m_type = TokenType::Variable;
   return result;
  }

@@ -3,31 +3,11 @@
 #pragma hdrstop
 #include "formeli.h"
 
-void Formeli::SetVar(char Buch,double Wert)
-{
- Vars[Buch-'A']=Wert;
-}
-
 double Formeli::Ergebnis()
 {
  position=0;
  Fehler=false;
  return StrichRech();
-}
-
-Formeli::Formeli():RDFormel(NONE)
-{
- Vars=new double[26];
-}
-
-Formeli::Formeli(char *frei):RDFormel(frei)
-{
- Vars=new double[26];
-}
-
-Formeli::~Formeli()
-{
- delete Vars;
 }
 
 double Formeli::Wurzel()
@@ -118,7 +98,7 @@ double Formeli::SpezFunc(Token token) {
   case COTH : return cothrd(ifunc());
  }
  if(token.m_char>='A' && token.m_char<='Z')
-  return PotRech(Vars[token.m_char-'A']);
+  return PotRech(vars[token.m_char]);
 }
 
 inline double Formeli::fak(double in)
