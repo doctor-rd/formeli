@@ -4,12 +4,11 @@
 #pragma hdrstop
 #include "rdformel.h"
 
-#define Z *(char*) Daten=*Test; position++; return false;
+#define Z result.m_char=*Test; position++; return result;
 
 char Zahlen[]="0123456789.E";
 int position;
 char SpezLaenge;
-char Spezial;
 
 bool enthalten(char *Text, char *enth)
 {
@@ -66,8 +65,8 @@ double RDFormel::getZahl()
  return Back;
 }
 
-bool RDFormel::getpart(void *Daten)
-{
+Token RDFormel::getNextToken() {
+ Token result;
  char *Test;
  Nochmal:
  Test=Rechnung+position;
@@ -88,175 +87,176 @@ bool RDFormel::getpart(void *Daten)
 
  if(*Test>='A' && *Test<='Z')
  {
-  Spezial=*Test;
-  *(char*)Daten='S';
+  result.m_char=*Test;
   position++;
   SpezLaenge=1;
-  if(!aktiv[Spezial-'A'])
-   *(char*)Daten='?';
-  return false;
+  if(!aktiv[*Test-'A'])
+   result.m_char='?';
+  result.m_type = TokenType::Variable;
+  return result;
  }
 
  if(enthalten(Test,"e"))
  {
-  Spezial=E;
-  *(char*)Daten='S';
+  result.m_char=E;
   position++;
   SpezLaenge=1;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
 
  if(enthalten(Test,"ln"))
  {
-  Spezial=LN;
-  *(char*)Daten='S';
+  result.m_char=LN;
   position+=2;
   SpezLaenge=2;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
 
  if(enthalten(Test,"log"))
  {
-  Spezial=LOG;
-  *(char*)Daten='S';
+  result.m_char=LOG;
   position+=3;
   SpezLaenge=3;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
 
  if(enthalten(Test,"pi"))
  {
-  Spezial=PI;
-  *(char*)Daten='S';
+  result.m_char=PI;
   position+=2;
   SpezLaenge=2;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
 
  if(enthalten(Test,"sqrt"))
  {
-  Spezial=WURZEL;
-  *(char*)Daten='S';
+  result.m_char=WURZEL;
   position+=4;
   SpezLaenge=4;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"sinh"))
  {
-  Spezial=SINH;
-  *(char*)Daten='S';
+  result.m_char=SINH;
   position+=4;
   SpezLaenge=4;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"cosh"))
  {
-  Spezial=COSH;
-  *(char*)Daten='S';
+  result.m_char=COSH;
   position+=4;
   SpezLaenge=4;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"tanh"))
  {
-  Spezial=TANH;
-  *(char*)Daten='S';
+  result.m_char=TANH;
   position+=4;
   SpezLaenge=4;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"coth"))
  {
-  Spezial=COTH;
-  *(char*)Daten='S';
+  result.m_char=COTH;
   position+=4;
   SpezLaenge=4;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"sin"))
  {
-  Spezial=SIN;
-  *(char*)Daten='S';
+  result.m_char=SIN;
   position+=3;
   SpezLaenge=3;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"cos"))
  {
-  Spezial=COS;
-  *(char*)Daten='S';
+  result.m_char=COS;
   position+=3;
   SpezLaenge=3;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"tan"))
  {
-  Spezial=TAN;
-  *(char*)Daten='S';
+  result.m_char=TAN;
   position+=3;
   SpezLaenge=3;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
 
  if(enthalten(Test,"cot"))
  {
-  Spezial=COT;
-  *(char*)Daten='S';
+  result.m_char=COT;
   position+=3;
   SpezLaenge=3;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
 
  if(enthalten(Test,"arcsin"))
  {
-  Spezial=ASIN;
-  *(char*)Daten='S';
+  result.m_char=ASIN;
   position+=6;
   SpezLaenge=6;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"arccos"))
  {
-  Spezial=ACOS;
-  *(char*)Daten='S';
+  result.m_char=ACOS;
   position+=6;
   SpezLaenge=6;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"arctan"))
  {
-  Spezial=ATAN;
-  *(char*)Daten='S';
+  result.m_char=ATAN;
   position+=6;
   SpezLaenge=6;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
  if(enthalten(Test,"arccot"))
  {
-  Spezial=ACOT;
-  *(char*)Daten='S';
+  result.m_char=ACOT;
   position+=6;
   SpezLaenge=6;
-  return false;
+  result.m_type = TokenType::Function;
+  return result;
  }
 
  if((*Test>='x' && *Test<='y') || *Test=='t')
  {
-  *(char*)Daten='S';
-  Spezial=*Test+'A'-'a';
+  result.m_char=*Test+'A'-'a';
   position++;
   SpezLaenge=1;
-  if(!aktiv[Spezial-'A'])
-   *(char*)Daten='?';
-  return false;
+  if(!aktiv[*Test-'a'])
+   result.m_char='?';
+  result.m_type = TokenType::Variable;
+  return result;
  }
 
  if(Ziffer(Rechnung[position]))
  {
-  *(double*)Daten=getZahl();
-  return true;
+  result.m_number=getZahl();
+  result.m_type = TokenType::Number;
+  return result;
  }
- *(char*)Daten='?';
+ result.m_char='?';
  position++;
- return false;
+ return result;
 }

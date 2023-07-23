@@ -21,7 +21,7 @@ class Formeli:public RDFormel
   double StrichRech();
   double PotRech(double);
   double PunktRech(double);
-  double SpezFunc();
+  double SpezFunc(Token);
   double Wurzel();
   double ifunc();
 

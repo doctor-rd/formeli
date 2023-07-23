@@ -4,9 +4,29 @@ enum Spezials{SINH,COSH,TANH,COTH,E,PI,LN,LOG,SIN,COS,TAN,COT,ASIN,ACOS,ATAN,ACO
 
 extern int position;
 extern char SpezLaenge;
-extern char Spezial;
 
 bool enthalten(char *Text, char *enth);
+
+enum class TokenType {
+    None,
+    Number,
+    Variable,
+    Function,
+};
+
+struct Token {
+    TokenType m_type {TokenType::None};
+    double m_number;
+    char m_char;
+
+    bool is_number() const {
+        return m_type == TokenType::Number;
+    }
+
+    bool is_special() const {
+        return m_type == TokenType::Variable || m_type == TokenType::Function;
+    }
+};
 
 class RDFormel
 {
@@ -19,7 +39,7 @@ class RDFormel
   char *Rechnung;
 
  protected:
-  bool getpart(void *Daten);
+    [[nodiscard]] Token getNextToken();
 
  private:
   bool *aktiv;

@@ -32,75 +32,72 @@ Formeli::~Formeli()
 
 double Formeli::Wurzel()
 {
- void *Daten=new double;
+ Token token;
  double Erg;
 
  Nochmal:
- if(getpart(Daten))
-  Erg=sqrt(PotRech(*(double*)Daten));
+ if((token=getNextToken()).is_number())
+  Erg=sqrt(PotRech(token.m_number));
  else
  {
-  if(*(char*)Daten=='S')
-   Erg=sqrtrd(PotRech(SpezFunc()));
-  if(*(char*)Daten=='(')
+  if(token.is_special())
+   Erg=sqrtrd(PotRech(SpezFunc(token)));
+  if(token.m_char=='(')
    Erg=sqrtrd(PotRech(StrichRech()));
-  if(*(char*)Daten=='+')
+  if(token.m_char=='+')
    goto Nochmal;
-  if(*(char*)Daten=='-')
-   if(getpart(Daten))
-    Erg=sqrtrd(-PotRech(*(double*)Daten));
+  if(token.m_char=='-')
+   if((token=getNextToken()).is_number())
+    Erg=sqrtrd(-PotRech(token.m_number));
    else
    {
-    if(*(char*)Daten=='(')
+    if(token.m_char=='(')
      Erg=sqrtrd(-PotRech(StrichRech()));
-    if(*(char*)Daten=='S')
-     Erg=sqrtrd(-PotRech(SpezFunc()));
+    if(token.is_special())
+     Erg=sqrtrd(-PotRech(SpezFunc(token)));
    }
  }
- delete Daten;
  return Erg;
 }
 
 double Formeli::ifunc()
 {
- void *Daten=new double;
+ Token token;
  double Erg;
 
  Nochmal:
- if(getpart(Daten))
-  Erg=PunktRech(*(double*)Daten);
+ if((token=getNextToken()).is_number())
+  Erg=PunktRech(token.m_number);
  else
  {
-  if(*(char*)Daten=='S')
-   Erg=PunktRech(SpezFunc());
-  if(*(char*)Daten=='(')
+  if(token.is_special())
+   Erg=PunktRech(SpezFunc(token));
+  if(token.m_char=='(')
   {
    position--;
    Erg=PunktRech(1);
   }
-  if(*(char*)Daten=='+')
+  if(token.m_char=='+')
    goto Nochmal;
-  if(*(char*)Daten=='-')
-   if(getpart(Daten))
-    Erg=-PunktRech(*(double*)Daten);
+  if(token.m_char=='-')
+   if((token=getNextToken()).is_number())
+    Erg=-PunktRech(token.m_number);
    else
    {
-    if(*(char*)Daten=='S')
-     Erg=-PunktRech(SpezFunc());
-    if(*(char*)Daten=='(')
+    if(token.is_special())
+     Erg=-PunktRech(SpezFunc(token));
+    if(token.m_char=='(')
     {
      position--;
      Erg=-PunktRech(1);
     }
    }
  }
- delete Daten;
  return Erg;
 }
 
-double Formeli::SpezFunc()
-{
- switch(Spezial)
+double Formeli::SpezFunc(Token token) {
+ switch(token.m_char)
  {
   case WURZEL : return Wurzel();
   case PI : return PotRech(M_PI);
@@ -120,8 +117,8 @@ double Formeli::SpezFunc()
   case TANH : return tanh(ifunc());
   case COTH : return cothrd(ifunc());
  }
- if(Spezial>='A' && Spezial<='Z')
-  return PotRech(Vars[Spezial-'A']);
+ if(token.m_char>='A' && token.m_char<='Z')
+  return PotRech(Vars[token.m_char-'A']);
 }
 
 inline double Formeli::fak(double in)
@@ -142,10 +139,14 @@ inline double Formeli::fak(double in)
 double Formeli::PotRech(double erste)
 {
  double Erg=erste;
- void *Daten=new double;
+ Token token;
 
- getpart(Daten);
- switch(*(char*)Daten)
+ token=getNextToken();
+ if (token.is_special()) {
+  position-=SpezLaenge;
+  return Erg;
+ }
+ switch(token.m_char)
  {
   case 0   : position--; break;
   case ')' : position--; break;
@@ -154,102 +155,102 @@ double Formeli::PotRech(double erste)
   case '-' : position--; break;
   case '*' : position--; break;
   case '/' : position--; break;
-  case 'S' : position-=SpezLaenge; break;
   case '!' : Erg=PotRech(fak(Erg)); break;
   case '^' : Nochmal:
-	     if(getpart(Daten))
-              Erg=powrd(Erg,PotRech(*(double*)Daten));
+	     if((token=getNextToken()).is_number())
+              Erg=powrd(Erg,PotRech(token.m_number));
              else
              {
-              if(*(char*)Daten=='(')
+              if(token.m_char=='(')
                Erg=powrd(Erg,PotRech(StrichRech()));
-              if(*(char*)Daten=='S')
-               Erg=powrd(Erg,SpezFunc());
-              if(*(char*)Daten=='+')
+              if(token.is_special())
+               Erg=powrd(Erg,SpezFunc(token));
+              if(token.m_char=='+')
                goto Nochmal;
-              if(*(char*)Daten=='-')
-               if(getpart(Daten))
-                Erg=powrd(Erg,-PotRech(*(double*)Daten));
+              if(token.m_char=='-')
+               if((token=getNextToken()).is_number())
+                Erg=powrd(Erg,-PotRech(token.m_number));
                else
                {
-                if(*(char*)Daten=='(')
+                if(token.m_char=='(')
                  Erg=powrd(Erg,-PotRech(StrichRech()));
-                if(*(char*)Daten=='S')
-                 Erg=powrd(Erg,-SpezFunc());
+                if(token.is_special())
+                 Erg=powrd(Erg,-SpezFunc(token));
                }
              }
  }
 
- delete Daten;
  return Erg;
 }
 
 double Formeli::PunktRech(double erste)
 {
  double Erg=PotRech(erste);
- void *Daten=new double;
+ Token token;
  bool ok=true;
 
  while(ok)
  {
-  getpart(Daten);
-  switch(*(char*)Daten)
+  token=getNextToken();
+  if (token.is_special()) {
+   Erg*=SpezFunc(token);
+   return Erg;
+  }
+  switch(token.m_char)
   {
    case ')' : position--; ok=false; break;
    case 0   : position--; ok=false; break;
    case '-' : position--; ok=false; break;
    case '+' : position--; ok=false; break;
    case '*' : Nochmalm:
-              if(getpart(Daten))
-               Erg*=PotRech(*(double*)Daten);
+              if((token=getNextToken()).is_number())
+               Erg*=PotRech(token.m_number);
               else
               {
-               if(*(char*) Daten=='S')
-                Erg*=SpezFunc();
-               if(*(char*) Daten=='(')
+               if(token.is_special())
+                Erg*=SpezFunc(token);
+               if(token.m_char=='(')
                 Erg*=PotRech(StrichRech());
-               if(*(char*) Daten=='+')
+               if(token.m_char=='+')
                 goto Nochmalm;
-               if(*(char*) Daten=='-')
-                if(getpart(Daten))
-                 Erg*=-PotRech(*(double*)Daten);
+               if(token.m_char=='-')
+                if((token=getNextToken()).is_number())
+                 Erg*=-PotRech(token.m_number);
                 else
                 {
-                 if(*(char*) Daten=='(')
+                 if(token.m_char=='(')
                   Erg*=-PotRech(StrichRech());
-                 if(*(char*) Daten=='S')
-                  Erg*=-SpezFunc();
+                 if(token.is_special())
+                  Erg*=-SpezFunc(token);
                 }
               }
               break;
    case '/' : Nochmald:
-              if(getpart(Daten))
-               divrd(Erg,PotRech(*(double*)Daten));
+              if((token=getNextToken()).is_number())
+               divrd(Erg, PotRech(token.m_number));
               else
               {
-               if(*(char*) Daten=='S')
-                divrd(Erg,SpezFunc());
-               if(*(char*) Daten=='(')
+               if(token.is_special())
+                divrd(Erg,SpezFunc(token));
+               if(token.m_char=='(')
                 divrd(Erg,PotRech(StrichRech()));
-               if(*(char*) Daten=='+')
+               if(token.m_char=='+')
                 goto Nochmald;
-               if(*(char*) Daten=='-')
-                if(getpart(Daten))
-                 divrd(Erg,-PotRech(*(double*)Daten));
+               if(token.m_char=='-')
+                if((token=getNextToken()).is_number())
+                 divrd(Erg,-PotRech(token.m_number));
                 else
                 {
-                 if(*(char*) Daten=='S')
-                  divrd(Erg,-SpezFunc());
-                 if(*(char*) Daten=='(')
+                 if(token.is_special())
+                  divrd(Erg,-SpezFunc(token));
+                 if(token.m_char=='(')
                   divrd(Erg,-PotRech(StrichRech()));
                 }
               }
               break;
    case '(' : Erg*=PotRech(StrichRech()); break;
-   case 'S' : Erg*=SpezFunc(); break;
   }
  }
- delete Daten;
  return Erg;
 }
 
@@ -257,31 +258,31 @@ double Formeli::StrichRech()
 {
  double Erg=0;
  bool ok=true;
- void *Daten=new double;
+ Token token;
 
  Nochmal:
- if(getpart(Daten))
-  Erg+=PunktRech(*(double*) Daten);
+ if((token=getNextToken()).is_number())
+  Erg+=PunktRech(token.m_number);
  else
  {
-  if(*(char*) Daten=='(')
+  if(token.m_char=='(')
   {
    position--;
    Erg=PunktRech(1);
   }
-  if(*(char*) Daten=='S')
-   Erg=PunktRech(SpezFunc());
-  if(*(char*) Daten=='+')
+  if(token.is_special())
+   Erg=PunktRech(SpezFunc(token));
+  if(token.m_char=='+')
    goto Nochmal;
-  if(*(char*) Daten=='-')
+  if(token.m_char=='-')
   {
-   if(getpart(Daten))
-    Erg-=PunktRech(*(double*) Daten);
+   if((token=getNextToken()).is_number())
+    Erg-=PunktRech(token.m_number);
    else
    {
-    if(*(char*) Daten=='S')
-     Erg=-PunktRech(SpezFunc());
-    if(*(char*) Daten=='(')
+    if(token.is_special())
+     Erg=-PunktRech(SpezFunc(token));
+    if(token.m_char=='(')
     {
      position--;
      Erg=-PunktRech(1);
@@ -292,31 +293,31 @@ double Formeli::StrichRech()
 
  while(ok)
  {
-  getpart(Daten);
-  switch(*(char*)Daten)
+  token=getNextToken();
+  switch(token.m_char)
   {
    case ')' : ok=false; break;
    case 0   : position--; ok=false; break;
-   case '+' : if(getpart(Daten))
-               Erg+=PunktRech(*(double*)Daten);
+   case '+' : if((token=getNextToken()).is_number())
+               Erg+=PunktRech(token.m_number);
               else
               {
-               if(*(char*)Daten=='S')
-                Erg+=PunktRech(SpezFunc());
-               if(*(char*)Daten=='(')
+               if(token.is_special())
+                Erg+=PunktRech(SpezFunc(token));
+               if(token.m_char=='(')
                {
                 position--;
                 Erg+=PunktRech(1);
                }
               }
               break;
-   case '-' : if(getpart(Daten))
-               Erg-=PunktRech(*(double*)Daten);
+   case '-' : if((token=getNextToken()).is_number())
+               Erg-=PunktRech(token.m_number);
               else
               {
-               if(*(char*)Daten=='S')
-                Erg-=PunktRech(SpezFunc());
-               if(*(char*)Daten=='(')
+               if(token.is_special())
+                Erg-=PunktRech(SpezFunc(token));
+               if(token.m_char=='(')
                {
                 position--;
                 Erg-=PunktRech(1);
@@ -326,7 +327,6 @@ double Formeli::StrichRech()
   }
  }
 
- delete Daten;
  return Erg;
 }
 
