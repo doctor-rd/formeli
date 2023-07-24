@@ -1,16 +1,15 @@
 #include <stdlib.h>
+#include <string>
 #include <string_view>
 #include <iostream>
 #include "rdformel.h"
 
-#define Z result.m_char=*Test; position++; return result;
+#define Z result.m_char=Test; position++; return result;
 #define F(name, value)         \
 if(result=getFunction(name)) { \
     result.m_char=value;       \
     return result;             \
 }
-
-int position;
 
 const std::string_view digits("0123456789.E");
 
@@ -18,22 +17,20 @@ static bool is_digit(char c) {
     return digits.find(c) != std::string_view::npos;
 }
 
-double RDFormel::getZahl()
-{
- char *Zahl=new char[50];
- int i=0;
- double Back;
-
- while(is_digit(Rechnung[position]) || Rechnung[position-1]=='E') {
-  Zahl[i]=Rechnung[position];
-  i++;
-  position++;
- }
- Zahl[i]=0;
-
- Back=atof(Zahl);
- delete Zahl;
- return Back;
+Token RDFormel::getNumber() {
+    Token result;
+    std::string number;
+    char ch;
+    while (position<expression.length()) {
+        if (!is_digit(ch=expression.at(position)))
+            break;
+        number.append(1, ch);
+        position++;
+    }
+    result.m_length=number.length();
+    result.m_type=TokenType::Number;
+    result.m_number=atof(number.c_str());
+    return result;
 }
 
 Token RDFormel::getFunction(std::string_view name) {
@@ -51,13 +48,16 @@ Token RDFormel::getFunction(std::string_view name) {
 
 Token RDFormel::getNextToken() {
  Token result;
- char *Test;
+    char Test;
  Nochmal:
- Test=Rechnung+position;
+    if (position>=expression.length()) {
+        result.m_char=0;
+        return result;
+    }
+    Test=expression.at(position);
 
- switch(*Test)
+ switch(Test)
  {
-  case 0   : Z
   case ' ' : position++; goto Nochmal;
   case '+' : Z
   case '/' : Z
@@ -69,12 +69,11 @@ Token RDFormel::getNextToken() {
   case '!' : Z
  }
 
- if(*Test>='A' && *Test<='Z')
- {
-  result.m_char=*Test;
+ if(Test>='A' && Test<='Z') {
+  result.m_char=Test;
   position++;
   if (!vars.contains(result.m_char)) {
-   std::cout<<"unexpected variable "<<*Test<<"\n";
+   std::cout<<"unexpected variable "<<Test<<"\n";
    result.m_char='?';
   }
   result.m_type = TokenType::Variable;
@@ -99,24 +98,21 @@ Token RDFormel::getNextToken() {
     F("arctan", ATAN)
     F("arccot", ACOT)
 
- if((*Test>='x' && *Test<='y') || *Test=='t')
- {
-  result.m_char=*Test+'A'-'a';
+ if((Test>='x' && Test<='y') || Test=='t') {
+  result.m_char=Test+'A'-'a';
   position++;
   if (!vars.contains(result.m_char)) {
-   std::cout<<"unexpected variable "<<*Test<<"\n";
+   std::cout<<"unexpected variable "<<Test<<"\n";
    result.m_char='?';
   }
   result.m_type = TokenType::Variable;
   return result;
  }
 
- if(is_digit(Rechnung[position]))
- {
-  result.m_number=getZahl();
-  result.m_type = TokenType::Number;
-  return result;
- }
+    if(is_digit(expression.at(position))) {
+        result=getNumber();
+        return result;
+    }
  result.m_char='?';
  position++;
  return result;

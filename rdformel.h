@@ -3,8 +3,6 @@
 
 enum Spezials{SINH,COSH,TANH,COTH,E,PI,LN,LOG,SIN,COS,TAN,COT,ASIN,ACOS,ATAN,ACOT,WURZEL};
 
-extern int position;
-
 enum class TokenType {
     None,
     Number,
@@ -33,16 +31,15 @@ struct Token {
 
 class RDFormel
 {
- public:
-  //Zeiger auf den String mit der Rechnung
-  char *Rechnung;
+public:
     std::string_view expression;
     std::map<char, double> vars;
 
- protected:
+protected:
     [[nodiscard]] Token getNextToken();
+    int position;
 
- private:
+private:
     [[nodiscard]] Token getFunction(std::string_view);
-  double getZahl();
+    [[nodiscard]] Token getNumber();
 };
