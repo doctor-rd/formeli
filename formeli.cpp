@@ -174,7 +174,7 @@ double Formeli::PunktRech(double erste)
   token=getNextToken();
   if (token.is_special()) {
    Erg*=SpezFunc(token);
-   return Erg;
+   continue;
   }
   switch(token.m_char)
   {
