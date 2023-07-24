@@ -1,13 +1,13 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string_view>
 #include <iostream>
 #pragma hdrstop
 #include "rdformel.h"
 
 #define Z result.m_char=*Test; position++; return result;
 
-char Zahlen[]="0123456789.E";
 int position;
 
 bool enthalten(char *Text, char *enth)
@@ -20,13 +20,10 @@ bool enthalten(char *Text, char *enth)
  return gleich;
 }
 
-bool Ziffer(char Zeichen)
-{
- for(char i=0;i<strlen(Zahlen);i++)
-  if(Zahlen[i]==Zeichen)
-   return true;
+const std::string_view digits("0123456789.E");
 
- return false;
+static bool is_digit(char c) {
+    return digits.find(c) != std::string_view::npos;
 }
 
 double RDFormel::getZahl()
@@ -35,8 +32,7 @@ double RDFormel::getZahl()
  int i=0;
  double Back;
 
- while(Ziffer(Rechnung[position]) || Rechnung[position-1]=='E')
- {
+ while(is_digit(Rechnung[position]) || Rechnung[position-1]=='E') {
   Zahl[i]=Rechnung[position];
   i++;
   position++;
@@ -234,7 +230,7 @@ Token RDFormel::getNextToken() {
   return result;
  }
 
- if(Ziffer(Rechnung[position]))
+ if(is_digit(Rechnung[position]))
  {
   result.m_number=getZahl();
   result.m_type = TokenType::Number;
