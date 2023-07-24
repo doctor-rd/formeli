@@ -1,10 +1,9 @@
 #include<map>
+#include<string_view>
 
 enum Spezials{SINH,COSH,TANH,COTH,E,PI,LN,LOG,SIN,COS,TAN,COT,ASIN,ACOS,ATAN,ACOT,WURZEL};
 
 extern int position;
-
-bool enthalten(char *Text, char *enth);
 
 enum class TokenType {
     None,
@@ -26,6 +25,10 @@ struct Token {
     bool is_special() const {
         return m_type == TokenType::Variable || m_type == TokenType::Function;
     }
+
+    operator bool() const {
+        return m_length>0;
+    }
 };
 
 class RDFormel
@@ -33,11 +36,13 @@ class RDFormel
  public:
   //Zeiger auf den String mit der Rechnung
   char *Rechnung;
+    std::string_view expression;
     std::map<char, double> vars;
 
  protected:
     [[nodiscard]] Token getNextToken();
 
  private:
+    [[nodiscard]] Token getFunction(std::string_view);
   double getZahl();
 };

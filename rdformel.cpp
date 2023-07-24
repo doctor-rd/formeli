@@ -1,24 +1,16 @@
-#include <string.h>
-#include <math.h>
 #include <stdlib.h>
 #include <string_view>
 #include <iostream>
-#pragma hdrstop
 #include "rdformel.h"
 
 #define Z result.m_char=*Test; position++; return result;
+#define F(name, value)         \
+if(result=getFunction(name)) { \
+    result.m_char=value;       \
+    return result;             \
+}
 
 int position;
-
-bool enthalten(char *Text, char *enth)
-{
- bool gleich=true;
- for(char i=0;i<strlen(enth);i++)
-  if(Text[i]!=enth[i])
-   gleich=false;
-
- return gleich;
-}
 
 const std::string_view digits("0123456789.E");
 
@@ -42,6 +34,19 @@ double RDFormel::getZahl()
  Back=atof(Zahl);
  delete Zahl;
  return Back;
+}
+
+Token RDFormel::getFunction(std::string_view name) {
+    Token result;
+    auto len=name.length();
+    if (expression.compare(position, len, name)!=0) {
+        result.m_length=0;
+        return result;
+    }
+    result.m_length=len;
+    position+=len;
+    result.m_type=TokenType::Function;
+    return result;
 }
 
 Token RDFormel::getNextToken() {
@@ -76,147 +81,23 @@ Token RDFormel::getNextToken() {
   return result;
  }
 
- if(enthalten(Test,"e"))
- {
-  result.m_char=E;
-  position++;
-  result.m_type = TokenType::Function;
-  return result;
- }
-
- if(enthalten(Test,"ln"))
- {
-  result.m_char=LN;
-  position+=2;
-  result.m_length=2;
-  result.m_type = TokenType::Function;
-  return result;
- }
-
- if(enthalten(Test,"log"))
- {
-  result.m_char=LOG;
-  position+=3;
-  result.m_length=3;
-  result.m_type = TokenType::Function;
-  return result;
- }
-
- if(enthalten(Test,"pi"))
- {
-  result.m_char=PI;
-  position+=2;
-  result.m_length=2;
-  result.m_type = TokenType::Function;
-  return result;
- }
-
- if(enthalten(Test,"sqrt"))
- {
-  result.m_char=WURZEL;
-  position+=4;
-  result.m_length=4;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"sinh"))
- {
-  result.m_char=SINH;
-  position+=4;
-  result.m_length=4;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"cosh"))
- {
-  result.m_char=COSH;
-  position+=4;
-  result.m_length=4;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"tanh"))
- {
-  result.m_char=TANH;
-  position+=4;
-  result.m_length=4;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"coth"))
- {
-  result.m_char=COTH;
-  position+=4;
-  result.m_length=4;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"sin"))
- {
-  result.m_char=SIN;
-  position+=3;
-  result.m_length=3;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"cos"))
- {
-  result.m_char=COS;
-  position+=3;
-  result.m_length=3;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"tan"))
- {
-  result.m_char=TAN;
-  position+=3;
-  result.m_length=3;
-  result.m_type = TokenType::Function;
-  return result;
- }
-
- if(enthalten(Test,"cot"))
- {
-  result.m_char=COT;
-  position+=3;
-  result.m_length=3;
-  result.m_type = TokenType::Function;
-  return result;
- }
-
- if(enthalten(Test,"arcsin"))
- {
-  result.m_char=ASIN;
-  position+=6;
-  result.m_length=6;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"arccos"))
- {
-  result.m_char=ACOS;
-  position+=6;
-  result.m_length=6;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"arctan"))
- {
-  result.m_char=ATAN;
-  position+=6;
-  result.m_length=6;
-  result.m_type = TokenType::Function;
-  return result;
- }
- if(enthalten(Test,"arccot"))
- {
-  result.m_char=ACOT;
-  position+=6;
-  result.m_length=6;
-  result.m_type = TokenType::Function;
-  return result;
- }
+    F("e", E)
+    F("ln", LN)
+    F("log", LOG)
+    F("pi", PI)
+    F("sqrt", WURZEL)
+    F("sinh", SINH)
+    F("cosh", COSH)
+    F("tanh", TANH)
+    F("coth", COTH)
+    F("sin", SIN)
+    F("cos", COS)
+    F("tan", TAN)
+    F("cot", COT)
+    F("arcsin", ASIN)
+    F("arccos", ACOS)
+    F("arctan", ATAN)
+    F("arccot", ACOT)
 
  if((*Test>='x' && *Test<='y') || *Test=='t')
  {
