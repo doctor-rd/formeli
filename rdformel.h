@@ -3,7 +3,6 @@
 enum Spezials{SINH,COSH,TANH,COTH,E,PI,LN,LOG,SIN,COS,TAN,COT,ASIN,ACOS,ATAN,ACOT,WURZEL};
 
 extern int position;
-extern char SpezLaenge;
 
 bool enthalten(char *Text, char *enth);
 
@@ -16,6 +15,7 @@ enum class TokenType {
 
 struct Token {
     TokenType m_type {TokenType::None};
+    int m_length {1};
     double m_number;
     char m_char;
 

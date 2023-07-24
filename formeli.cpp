@@ -123,7 +123,7 @@ double Formeli::PotRech(double erste)
 
  token=getNextToken();
  if (token.is_special()) {
-  position-=SpezLaenge;
+  position-=token.m_length;
   return Erg;
  }
  switch(token.m_char)

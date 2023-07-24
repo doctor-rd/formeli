@@ -9,7 +9,6 @@
 
 char Zahlen[]="0123456789.E";
 int position;
-char SpezLaenge;
 
 bool enthalten(char *Text, char *enth)
 {
@@ -73,7 +72,6 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=*Test;
   position++;
-  SpezLaenge=1;
   if (!vars.contains(result.m_char)) {
    std::cout<<"unexpected variable "<<*Test<<"\n";
    result.m_char='?';
@@ -86,7 +84,6 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=E;
   position++;
-  SpezLaenge=1;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -95,7 +92,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=LN;
   position+=2;
-  SpezLaenge=2;
+  result.m_length=2;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -104,7 +101,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=LOG;
   position+=3;
-  SpezLaenge=3;
+  result.m_length=3;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -113,7 +110,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=PI;
   position+=2;
-  SpezLaenge=2;
+  result.m_length=2;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -122,7 +119,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=WURZEL;
   position+=4;
-  SpezLaenge=4;
+  result.m_length=4;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -130,7 +127,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=SINH;
   position+=4;
-  SpezLaenge=4;
+  result.m_length=4;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -138,7 +135,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=COSH;
   position+=4;
-  SpezLaenge=4;
+  result.m_length=4;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -146,7 +143,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=TANH;
   position+=4;
-  SpezLaenge=4;
+  result.m_length=4;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -154,7 +151,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=COTH;
   position+=4;
-  SpezLaenge=4;
+  result.m_length=4;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -162,7 +159,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=SIN;
   position+=3;
-  SpezLaenge=3;
+  result.m_length=3;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -170,7 +167,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=COS;
   position+=3;
-  SpezLaenge=3;
+  result.m_length=3;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -178,7 +175,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=TAN;
   position+=3;
-  SpezLaenge=3;
+  result.m_length=3;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -187,7 +184,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=COT;
   position+=3;
-  SpezLaenge=3;
+  result.m_length=3;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -196,7 +193,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=ASIN;
   position+=6;
-  SpezLaenge=6;
+  result.m_length=6;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -204,7 +201,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=ACOS;
   position+=6;
-  SpezLaenge=6;
+  result.m_length=6;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -212,7 +209,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=ATAN;
   position+=6;
-  SpezLaenge=6;
+  result.m_length=6;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -220,7 +217,7 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=ACOT;
   position+=6;
-  SpezLaenge=6;
+  result.m_length=6;
   result.m_type = TokenType::Function;
   return result;
  }
@@ -229,7 +226,6 @@ Token RDFormel::getNextToken() {
  {
   result.m_char=*Test+'A'-'a';
   position++;
-  SpezLaenge=1;
   if (!vars.contains(result.m_char)) {
    std::cout<<"unexpected variable "<<*Test<<"\n";
    result.m_char='?';
