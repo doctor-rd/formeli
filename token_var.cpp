@@ -2,7 +2,7 @@
 #include <string>
 #include <string_view>
 #include <iostream>
-#include "rdformel.h"
+#include "token_var.h"
 
 #define Z result.m_char=Test; position++; return result;
 #define F(name, value)         \
@@ -17,7 +17,7 @@ static bool is_digit(char c) {
     return digits.find(c) != std::string_view::npos;
 }
 
-Token RDFormel::getNumber() {
+Token TokenVar::getNumber() {
     Token result;
     std::string number;
     char ch;
@@ -33,7 +33,7 @@ Token RDFormel::getNumber() {
     return result;
 }
 
-Token RDFormel::getFunction(std::string_view name) {
+Token TokenVar::getFunction(std::string_view name) {
     Token result;
     auto len=name.length();
     if (expression.compare(position, len, name)!=0) {
@@ -46,7 +46,7 @@ Token RDFormel::getFunction(std::string_view name) {
     return result;
 }
 
-Token RDFormel::getNextToken() {
+Token TokenVar::getNextToken() {
  Token result;
     char Test;
  Nochmal:

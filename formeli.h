@@ -1,7 +1,6 @@
-#include "rdformel.h"
+#include "token_var.h"
 
-class Formeli:public RDFormel
-{
+class Formeli : public TokenVar {
  public:
   //Liefert das Ergebnis von Rechnung zurück
   double Ergebnis();

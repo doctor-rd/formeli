@@ -29,8 +29,7 @@ struct Token {
     }
 };
 
-class RDFormel
-{
+class TokenVar {
 public:
     std::string_view expression;
     std::map<char, double> vars;
