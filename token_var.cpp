@@ -52,6 +52,7 @@ Token TokenVar::getNextToken() {
  Nochmal:
     if (position>=expression.length()) {
         result.m_char=0;
+        position++;
         return result;
     }
     Test=expression.at(position);
